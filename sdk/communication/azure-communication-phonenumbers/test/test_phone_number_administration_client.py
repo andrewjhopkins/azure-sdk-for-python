@@ -322,6 +322,29 @@ class TestPhoneNumbersClient(PhoneNumbersTestCase):
         assert area_codes.next()
 
     @recorded_by_proxy
+    def test_list_mobile_area_codes(self):
+        first_locality = self.phone_number_client.list_available_localities("IE", PhoneNumberType=PhoneNumberType.MOBILE).next()
+        area_codes = self.phone_number_client.list_available_area_codes(
+            "IE",
+            PhoneNumberType.MOBILE,
+            assignment_type=PhoneNumberAssignmentType.APPLICATION,
+            locality=first_locality.localized_name,
+        )
+        assert area_codes.next()
+
+    @recorded_by_proxy
+    def test_list_mobile_area_codes_from_managed_identity(self):
+        phone_number_client = self._get_managed_identity_phone_number_client()
+        first_locality = phone_number_client.list_available_localities("IE", PhoneNumberType=PhoneNumberType.MOBILE).next()
+        area_codes = self.phone_number_client.list_available_area_codes(
+            "IE",
+            PhoneNumberType.MOBILE,
+            assignment_type=PhoneNumberAssignmentType.APPLICATION,
+            locality=first_locality.localized_name,
+        )
+        assert area_codes.next()
+
+    @recorded_by_proxy
     def test_list_geographic_area_codes(self):
         first_locality = self.phone_number_client.list_available_localities("US").next()
         area_codes = self.phone_number_client.list_available_area_codes(
